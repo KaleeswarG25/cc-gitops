@@ -6,17 +6,16 @@ metadata:
   namespace: argocd
 
 spec:
-
   generators:
-
     - git:
         repoURL: https://github.com/KaleeswarG25/cc-gitops.git
         revision: main
-
         directories:
-          - path: environments/*
+          # Change this line to target the correct path pattern
+          - path: argocd/environments/*
           - path: argocd/environments
             exclude: true
+
 
   template:
 
