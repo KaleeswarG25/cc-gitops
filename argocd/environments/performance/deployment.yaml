@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcart-performance
+  namespace: performance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcart
+  template:
+    metadata:
+      labels:
+        app: cloudcart
+    spec:
+      containers:
+      - name: cloudcart
+        image: nginx:alpine # Replace with your performance container image
+        ports:
+        - containerPort: 80
