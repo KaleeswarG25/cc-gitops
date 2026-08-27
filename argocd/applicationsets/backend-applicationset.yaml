@@ -17,16 +17,19 @@ spec:
               elements:
                 - environment: dev
                   namespace: dev
+                  project: dev-project
                 - environment: staging
                   namespace: staging
+                  project: default
                 - environment: prod
                   namespace: prod
+                  project: prod-project
   template:
     metadata:
       name: '{{app}}-{{environment}}'
     spec:
       # Reverted to default to prevent MissingProject failures for staging
-      project: default 
+      project: {{project}} 
       source:
         repoURL: https://github.com/KaleeswarG25/cc-gitops.git
         targetRevision: main
