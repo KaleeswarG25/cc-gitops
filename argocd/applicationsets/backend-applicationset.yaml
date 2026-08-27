@@ -18,9 +18,11 @@ spec:
                 - environment: dev
                   namespace: dev
                   project: dev-project
+
                 - environment: staging
                   namespace: staging
                   project: default
+
                 - environment: prod
                   namespace: prod
                   project: prod-project
@@ -28,7 +30,6 @@ spec:
     metadata:
       name: '{{app}}-{{environment}}'
     spec:
-      # Reverted to default to prevent MissingProject failures for staging
       project: '{{project}}'
       source:
         repoURL: https://github.com/KaleeswarG25/cc-gitops.git
@@ -36,10 +37,9 @@ spec:
         path: '{{chartPath}}'
         helm:
           valueFiles:
-            # Matches your 3-level folder structure exactly
             - '../../../environments/{{environment}}/{{app}}-values.yaml'
       destination:
-        server: https://kubernetes.default.svc
+        server: https://default.svc
         namespace: '{{namespace}}'
       syncPolicy:
         automated:
