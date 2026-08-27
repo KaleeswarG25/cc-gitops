@@ -25,26 +25,22 @@ spec:
     metadata:
       name: '{{app}}-{{environment}}'
     spec:
-      # Fixed: Routes apps to your custom environment projects instead of 'default'
-      # Staging usually maps to dev or prod project depending on how you named them
-      project: "{{environment}}-project" 
-      sources:
-        - repoURL: https://github.com
-          targetRevision: main
-          path: '{{chartPath}}'
-          helm:
-            valueFiles:
-              - '$values/environments/{{environment}}/{{app}}-values.yaml'
-        - repoURL: https://github.com
-          targetRevision: main
-          ref: values
+      # Reverted to default to prevent MissingProject failures for staging
+      project: default 
+      source:
+        repoURL: https://github.com/KaleeswarG25/cc-gitops.git
+        targetRevision: main
+        path: '{{chartPath}}'
+        helm:
+          valueFiles:
+            # Matches your 3-level folder structure exactly
+            - '../../../environments/{{environment}}/{{app}}-values.yaml'
       destination:
-        server: https://default.svc
+        server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
-        # Fixed: Ensures Argo CD auto-creates the namespaces if they don't exist yet
         syncOptions:
           - CreateNamespace=true
