@@ -1,54 +1,50 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
-
 metadata:
   name: backend
   namespace: argocd
-
 spec:
-
   generators:
-    - list:
-        elements:
-          - app: backend
-            chartPath: charts/backend/backend
-
-          - app: frontend
-            chartPath: charts/frontend/frontend
-    - list:
-        elements:
-          - environment: dev
-            namespace: dev
-
-          - environment: staging
-            namespace: staging
-
-          - environment: prod
-            namespace: prod
-
+    - matrix:
+        generators:
+          - list:
+              elements:
+                - app: backend
+                  chartPath: charts/backend/backend
+                - app: frontend
+                  chartPath: charts/frontend/frontend
+          - list:
+              elements:
+                - environment: dev
+                  namespace: dev
+                - environment: staging
+                  namespace: staging
+                - environment: prod
+                  namespace: prod
   template:
-
     metadata:
       name: '{{app}}-{{environment}}'
-
     spec:
-
-      project: default
-
-      source:
-        repoURL: https://github.com/KaleeswarG25/cc-gitops.git
-        targetRevision: main
-        path: '{{chartPath}}'
-
-        helm:
-          valueFiles:
-            - '../../../environments/{{environment}}/{{app}}-values.yaml'
-
+      # Fixed: Routes apps to your custom environment projects instead of 'default'
+      # Staging usually maps to dev or prod project depending on how you named them
+      project: "{{environment}}-project" 
+      sources:
+        - repoURL: https://github.com
+          targetRevision: main
+          path: '{{chartPath}}'
+          helm:
+            valueFiles:
+              - '$values/environments/{{environment}}/{{app}}-values.yaml'
+        - repoURL: https://github.com
+          targetRevision: main
+          ref: values
       destination:
-        server: https://kubernetes.default.svc
+        server: https://default.svc
         namespace: '{{namespace}}'
-
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+        # Fixed: Ensures Argo CD auto-creates the namespaces if they don't exist yet
+        syncOptions:
+          - CreateNamespace=true
