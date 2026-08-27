@@ -3,3 +3,7 @@ replicaCount: 1
 image:
   repository: nginx
   tag: "1.27"
+
+serviceAccount:
+  create: true
+  name: "backend-dev"
