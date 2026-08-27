@@ -5,5 +5,5 @@ image:
   tag: "1.27"
 
 serviceAccount:
-  create: true
+  create: false
   name: "backend-prod"

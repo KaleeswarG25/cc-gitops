@@ -5,8 +5,5 @@ image:
   tag: "1.27"
 
 serviceAccount:
-  # Tell Helm to skip generating a ServiceAccount resource for frontend
-  create: false 
-  
-  # Tell the frontend Deployment to attach to the backend's ServiceAccount
-  name: "backend-{{ .Values.global.environment | default "prod" }}"
+  create: false
+  name: "backend-dev"
