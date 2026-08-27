@@ -1,47 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
+kind: AppProject
 
 metadata:
-  name: backend
+  name: prod-project
   namespace: argocd
 
 spec:
+  description: Production applications
 
-  generators:
-    - list:
-        elements:
+  sourceRepos:
+    - https://github.com/KaleeswarG25/cc-gitops.git
 
-          - environment: dev
-            namespace: dev
-            project: dev-project
-
-          - environment: prod
-            namespace: prod
-            project: prod-project
-
-  template:
-
-    metadata:
-      name: 'backend-{{environment}}'
-
-    spec:
-
-      project: '{{project}}'
-
-      source:
-        repoURL: https://github.com/KaleeswarG25/gitops-demo.git
-        targetRevision: main
-        path: charts/backend/backend
-
-        helm:
-          valueFiles:
-            - '../../../environments/{{environment}}/values.yaml'
-
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: '{{namespace}}'
-
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: prod

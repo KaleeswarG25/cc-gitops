@@ -9,7 +9,7 @@ spec:
   description: Development applications
 
   sourceRepos:
-    - https://github.com/KaleeswarG25/gitops-demo.git
+    - https://github.com/KaleeswarG25/cc-gitops.git
 
   destinations:
     - server: https://kubernetes.default.svc
